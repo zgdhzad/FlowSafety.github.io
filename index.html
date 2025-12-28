@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowSafety - Seeing Overlooked Risks in the City</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #0A2463;
+      /* Deep Indigo Blue */
+      --primary-light: #1E3A8A;
+      --secondary: #F4F4F9;
+      /* Gray White */
+      --accent: #FF6B35;
+      /* Amber Orange */
+      --text-dark: #1A1A2E;
+      --text-light: #F4F4F9;
+      --gray: #8A8A9D;
+      --grid-color: rgba(10, 36, 99, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--text-dark);
+      background-color: var(--secondary);
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Grid Background */
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    /* Navigation Bar */
+    header {
+      background-color: rgba(255, 255, 255, 0.95);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(10, 36, 99, 0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+    }
+
+    .logo-icon {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--primary-dark);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      cursor: pointer;
+    }
+
+    /* Main Area */
+    .hero {
+      padding: 150px 0 100px;
+      background: linear-gradient(135deg, rgba(10, 36, 99, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+      border-bottom: 1px solid rgba(10, 36, 99, 0.05);
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .tagline {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+    }
+
+    .hero-description {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      margin-bottom: 40px;
+      max-width: 600px;
+      opacity: 0.9;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background-color: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #e05a2b;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--primary-dark);
+      color: var(--primary-dark);
+      margin-left: 15px;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-dark);
+      color: white;
+    }
+
+    /* Section General Styles */
+    section {
+      padding: 100px 0;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 60px;
+      height: 3px;
+      background-color: var(--accent);
+    }
+
+    .section-subtitle {
+      font-size: 1.2rem;
+      color: var(--gray);
+      margin-bottom: 40px;
+      max-width: 800px;
+    }
+
+    /* Team Story Section */
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .story-card {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      border-top: 4px solid var(--primary-dark);
+      transition: transform 0.3s;
+    }
+
+    .story-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .story-card h3 {
+      font-size: 1.5rem;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .story-icon {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    .story-card p {
+      margin-bottom: 20px;
+      color: var(--text-dark);
+    }
+
+    .highlight {
+      background-color: rgba(255, 107, 53, 0.1);
+      padding: 15px;
+      border-left: 3px solid var(--accent);
+      margin: 20px 0;
+      font-style: italic;
+    }
+
+    /* Product Model Section */
+    .model-container {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .model-visualization {
+      height: 400px;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .model-diagram {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .city-icon,
+    .ai-icon,
+    .risk-icon {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .city-icon {
+      width: 100px;
+      height: 100px;
+      left: 20%;
+      top: 30%;
+    }
+
+    .ai-icon {
+      width: 80px;
+      height: 80px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .risk-icon {
+      width: 90px;
+      height: 90px;
+      right: 20%;
+      top: 40%;
+    }
+
+    .connection-line {
+      position: absolute;
+      height: 2px;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .line-1 {
+      width: 25%;
+      left: 30%;
+      top: 45%;
+    }
+
+    .line-2 {
+      width: 25%;
+      right: 30%;
+      top: 45%;
+    }
+
+    .model-details {
+      padding: 40px;
+    }
+
+    .model-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      background-color: rgba(10, 36, 99, 0.1);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: var(--primary-dark);
+      flex-shrink: 0;
+    }
+
+    /* Brand Image Section */
+    .brand-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .brand-card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .brand-card h3 {
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+    }
+
+    .color-swatch {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .color {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .color-1 {
+      background-color: var(--primary-dark);
+    }
+
+    .color-2 {
+      background-color: var(--secondary);
+      color: var(--text-dark);
+      border: 1px solid #ddd;
+    }
+
+    .color-3 {
+      background-color: var(--accent);
+    }
+
+    .keyword-list {
+      list-style: none;
+    }
+
+    .keyword-list li {
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .keyword-list li:before {
+      content: "•";
+      color: var(--accent);
+      position: absolute;
+      left: 0;
+      font-size: 1.5rem;
+    }
+
+    /* Innovation Points Section */
+    .innovation-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .innovation-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-top: 4px solid var(--accent);
+    }
+
+    .innovation-number {
+      display: inline-block;
+      background-color: var(--accent);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .innovation-card h4 {
+      color: var(--primary-dark);
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .comparison-column {
+      padding: 15px;
+      border-radius: 6px;
+    }
+
+    .traditional {
+      background-color: rgba(255, 107, 53, 0.05);
+      border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+
+    .our-approach {
+      background-color: rgba(10, 36, 99, 0.05);
+      border: 1px solid rgba(10, 36, 99, 0.2);
+    }
+
+    .comparison-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+
+    .comparison-title.traditional {
+      color: var(--accent);
+    }
+
+    /* Future Applications Section */
+    .application-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .application-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--primary-dark);
+    }
+
+    .application-icon {
+      width: 60px;
+      height: 60px;
+      background-color: rgba(10, 36, 99, 0.1);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+      font-size: 1.5rem;
+    }
+
+    /* Actual Results Showcase Section */
+    .showcase-container {
+      margin-top: 40px;
+    }
+
+    .scenario-tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 2px solid rgba(10, 36, 99, 0.1);
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .tab.active {
+      color: var(--primary-dark);
+    }
+
+    .tab.active:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent);
+    }
+
+    .tab:hover {
+      color: var(--primary-dark);
+    }
+
+    .scenario-content {
+      display: none;
+    }
+
+    .scenario-content.active {
+      display: block;
+    }
+
+    .scenario-description {
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: rgba(10, 36, 99, 0.05);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-dark);
+    }
+
+    .visualization-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .vis-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .vis-card h4 {
+      color: var(--primary-dark);
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .vis-icon {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+
+    .vis-content {
+      text-align: center;
+    }
+
+    .mockup-image {
+      width: 100%;
+      height: 200px;
+      background-color: #f5f5f5;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--gray);
+      font-style: italic;
+      border: 1px dashed #ddd;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .data-table th {
+      background-color: rgba(10, 36, 99, 0.05);
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .data-table tr:hover {
+      background-color: rgba(10, 36, 99, 0.02);
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .risk-low {
+      background-color: rgba(0, 200, 0, 0.1);
+      color: #006600;
+    }
+
+    .risk-medium {
+      background-color: rgba(255, 165, 0, 0.1);
+      color: #cc8400;
+    }
+
+    .risk-high {
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #cc0000;
+    }
+
+    .advice-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .advice-caution {
+      background-color: rgba(255, 165, 0, 0.1);
+      color: #cc8400;
+      border: 1px solid rgba(255, 165, 0, 0.3);
+    }
+
+    .advice-move {
+      background-color: rgba(0, 100, 255, 0.1);
+      color: #0044cc;
+      border: 1px solid rgba(0, 100, 255, 0.3);
+    }
+
+    .advice-evacuate {
+      background-color: rgba(255, 0, 0, 0.1);
+      color: #cc0000;
+      border: 1px solid rgba(255, 0, 0, 0.3);
+    }
+
+    .dashboard-mockup {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #e9ecef;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .risk-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      background-color: white;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--primary-dark);
+      color: white;
+      padding: 60px 0 30px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: white;
+    }
+
+    .footer-description {
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    .footer-heading {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 10px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 15px 0;
+      }
+
+      nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column;
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      nav ul.active {
+        display: flex;
+      }
+
+      nav ul li {
+        margin: 0;
+        padding: 10px 20px;
+        border-bottom: 1px solid rgba(10, 36, 99, 0.05);
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      section {
+        padding: 70px 0;
+      }
+
+      .hero {
+        padding: 130px 0 70px;
+      }
+
+      .model-visualization {
+        height: 300px;
+      }
+
+      .city-icon,
+      .ai-icon,
+      .risk-icon {
+        transform: scale(0.8);
+      }
+
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scenario-tabs {
+        flex-wrap: wrap;
+      }
+
+      .tab {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Grid Background -->
+  <div class="grid-bg"></div>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="container nav-container">
+      <div class="logo">
+        <i class="fas fa-water logo-icon"></i>
+        <span>FlowSafety</span>
+      </div>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <nav>
+        <ul id="navMenu">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#story">Team Story</a></li>
+          <li><a href="#model">Product Model</a></li>
+          <li><a href="#innovation">Innovations</a></li>
+          <li><a href="#showcase">Results</a></li>
+          <li><a href="#brand">Brand</a></li>
+          <li><a href="#applications">Applications</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Area -->
+  <main>
+    <!-- Home/Overview -->
+    <section class="hero" id="home">
+      <div class="container">
+        <div class="hero-content">
+          <div class="tagline">Seeing Overlooked Risks in the City</div>
+          <h1>Predicting Flood Risks with AI and Visualization<br>Protecting Life and Safety</h1>
+          <p class="hero-description">FlowSafety utilizes advanced AI models, feature recognition, and computer
+            visualization technology to enable every person in the city to know their flood risk earlier and more
+            specifically, and to receive rescue and assistance in time.</p>
+          <div>
+            <a href="#model" class="btn">Learn About Our Technology</a>
+            <a href="#story" class="btn btn-outline">Meet Our Team</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Story -->
+    <section id="story">
+      <div class="container">
+        <h2 class="section-title">Team Story</h2>
+        <p class="section-subtitle">We are committed to solving global flood risk problems and reducing losses and
+          casualties through technological innovation</p>
+
+        <div class="story-grid">
+          <div class="story-card">
+            <h3><i class="fas fa-question-circle story-icon"></i> Starting Point: Why We Started</h3>
+            <p>Today, approximately <strong>1.5 billion people</strong> worldwide are directly exposed to significant
+              flood risk, and in <strong>2024 alone, water-related disasters globally</strong> caused
+              <strong>approximately 8,700 deaths and affected over 40 million lives</strong>.</p>
+            <div class="highlight">
+              <p>In flood fatalities, <strong>75% of deaths are caused by drowning</strong>. Existing solutions have lag
+                and roughness, and the industry still lacks a relatively complete and systematic solution.</p>
+            </div>
+            <p>We found that in flood disasters, the lack of timely rescue due to information delays and the lack of
+              personal awareness for autonomous risk avoidance are often overlooked, leading to many unfortunate deaths.
+              We hope to help more people gain life-saving time through this project.</p>
+          </div>
+
+          <div class="story-card">
+            <h3><i class="fas fa-bullseye story-icon"></i> Mission: What We Solve Daily</h3>
+            <p><strong>Through AI models, feature recognition, and computer visualization, we enable every person in the
+                city to know their flood risk earlier and more specifically, and to receive rescue and assistance in
+                time.</strong></p>
+            <p>We focus on transforming complex data into intuitive visual information, providing accurate and timely
+              flood risk predictions for individuals, rescue agencies, and governments.</p>
+          </div>
+
+          <div class="story-card">
+            <h3><i class="fas fa-eye story-icon"></i> Vision: The World After Success</h3>
+            <p>When we succeed, in the face of floods, people in the world will scientifically improve the speed of
+              rescue decision-making, reduce the probability of drowning and other casualties, greatly improve people's
+              safety awareness, and more people will devote themselves to solving safety issues of floods and other
+              disasters. Cities will be endowed with sensing capabilities and responsibility boundaries.</p>
+            <p>We believe technology can give cities "sensing capabilities" to proactively respond to natural disasters
+              and protect every resident.</p>
+          </div>
+
+          <div class="story-card">
+            <h3><i class="fas fa-heart story-icon"></i> Values: How We Work</h3>
+            <p><strong>We are guided by human needs, turning data and analysis into warmth.</strong> When analyzing
+              risks, we focus on considering human situations and circumstances, turning abstract indicators into warm
+              helpers.</p>
+            <p><strong>We believe real situations are more important than ideal models.</strong> If the model does not
+              match real events, we correct the model to align with real standards.</p>
+            <p><strong>Even if the short-term impact may not be significant, we are still willing to persist in
+                promotion and innovation.</strong> We focus on long-term impact and continuously promote technological
+              innovation and application.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Model -->
+    <section id="model">
+      <div class="container">
+        <h2 class="section-title">Product Model</h2>
+        <p class="section-subtitle">Through innovative AI models and visualization technology, we have built a complete
+          flood risk prediction system</p>
+
+        <div class="model-container">
+          <div class="model-visualization">
+            <div class="model-diagram">
+              <div class="city-icon">
+                <i class="fas fa-city fa-3x" style="color: var(--primary-dark);"></i>
+              </div>
+
+              <div class="connection-line line-1"></div>
+
+              <div class="ai-icon">
+                <i class="fas fa-brain fa-2x" style="color: var(--accent);"></i>
+              </div>
+
+              <div class="connection-line line-2"></div>
+
+              <div class="risk-icon">
+                <i class="fas fa-exclamation-triangle fa-2x" style="color: var(--primary-dark);"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="model-details">
+            <h3>Flood Risk Prediction System</h3>
+            <p>Our system integrates multi-source data, including real-time sensor data, weather forecasts, terrain
+              data, historical flood records, etc., and analyzes and predicts through AI models to provide customized
+              flood risk information for different users.</p>
+
+            <div class="model-features">
+              <div class="feature">
+                <div class="feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                  <h4>Real-time Data Analysis</h4>
+                  <p>Integrates multi-source real-time data to provide accurate flood risk predictions and reduce
+                    information delays.</p>
+                </div>
+              </div>
+
+              <div class="feature">
+                <div class="feature-icon">
+                  <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <div>
+                  <h4>Precise Location Warnings</h4>
+                  <p>Provides personalized risk warnings based on geographic location to help users make optimal
+                    decisions.</p>
+                </div>
+              </div>
+
+              <div class="feature">
+                <div class="feature-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div>
+                  <h4>Multi-user Support</h4>
+                  <p>Provides different levels of information views and decision support for individuals, rescue
+                    agencies, and governments.</p>
+                </div>
+              </div>
+
+              <div class="feature">
+                <div class="feature-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                  <h4>Continuous Learning and Optimization</h4>
+                  <p>The system continuously learns new data and patterns, constantly optimizing prediction accuracy and
+                    response speed.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Innovation Points -->
+    <section id="innovation">
+      <div class="container">
+        <h2 class="section-title">Core Innovations</h2>
+        <p class="section-subtitle">Significant innovative breakthroughs in three levels: algorithm fusion, risk
+          modeling, and application interaction</p>
+
+        <div class="innovation-container">
+          <!-- Innovation 1 -->
+          <div class="innovation-card">
+            <div class="innovation-number">1</div>
+            <h4>Multi-source Perception Fusion for "Local Flood Risk Assessment"</h4>
+            <p>We not only perform water segmentation or person/vehicle detection, but simultaneously integrate:</p>
+            <ul class="keyword-list">
+              <li>Water area spatial distribution (semantic segmentation)</li>
+              <li>Person/vehicle precise location (YOLO)</li>
+              <li>Water depth estimation (visual + physics-inspired)</li>
+              <li>Terrain slope & water flow direction</li>
+              <li>Rainfall intensity (visual/external data)</li>
+              <li>Time extrapolation (risk in future N minutes)</li>
+            </ul>
+            <p><strong>This is "multi-modal risk modeling," not a simple object detection project.</strong></p>
+          </div>
+
+          <!-- Innovation 2 -->
+          <div class="innovation-card">
+            <div class="innovation-number">2</div>
+            <h4>Differentiated Flood Risk Modeling for "Pedestrians vs. Vehicles"</h4>
+            <p>We achieve semantic risk assessment, not simple numerical threshold judgment:</p>
+            <div class="comparison-grid">
+              <div class="comparison-column traditional">
+                <div class="comparison-title traditional">Traditional Method</div>
+                <p>Generic standard of "water depth > X = danger"</p>
+              </div>
+              <div class="comparison-column our-approach">
+                <div class="comparison-title">Our Method</div>
+                <p>For people: ankle/knee/waist/chest different danger levels</p>
+                <p>For vehicles: tire/chassis/window different danger levels</p>
+              </div>
+            </div>
+            <p>For example: 0.4m water depth is fatal to a person but passable for an SUV; 0.6m water depth floods a
+              sedan's engine, but a truck can still move slowly.</p>
+          </div>
+
+          <!-- Innovation 3 -->
+          <div class="innovation-card">
+            <div class="innovation-number">3</div>
+            <h4>Dual-state Risk Determination: "In-Water" vs. "Near-Water"</h4>
+            <p>We distinguish two situations:</p>
+            <ul class="keyword-list">
+              <li><strong>Already in water:</strong> Calculate overlap ratio, directly enter submersion risk model</li>
+              <li><strong>Not yet in water but close:</strong> Calculate distance to water, combine with nearest water
+                depth for warning</li>
+            </ul>
+            <p><strong>Innovation Summary:</strong> Upgrading from "whether submerged" to "whether about to enter a
+              dangerous situation," achieving true risk prediction rather than post-event analysis.</p>
+          </div>
+
+          <!-- Innovation 4 -->
+          <div class="innovation-card">
+            <div class="innovation-number">4</div>
+            <h4>Sensor-independent "Pure Vision Flood Risk System"</h4>
+            <p>Our system does not need water level gauges, radar, or IoT deployment, only needs:</p>
+            <ul class="keyword-list">
+              <li>Ordinary cameras</li>
+              <li>Existing surveillance/dashcams/drones</li>
+            </ul>
+            <p><strong>Practical Significance:</strong> During floods, sensors are most likely to be damaged, while
+              cameras are most abundant, achieving a "low-cost + high coverage" solution.</p>
+          </div>
+
+          <!-- Innovation 5 -->
+          <div class="innovation-card">
+            <div class="innovation-number">5</div>
+            <h4>Low-computation Water Depth Inference Based on "Semantic Anchors"</h4>
+            <p><strong>"Using humans as rulers":</strong> Uses YOLO-Pose to extract human skeleton keypoints (ankle,
+              knee, hip), and directly determines physical water depth through the topological relationship between
+              keypoints and water mask (e.g., "water over knees").</p>
+            <p><strong>"Using vehicles as markers":</strong> Uses vehicle bounding box and water surface geometric
+              intersection ratio to infer submersion level.</p>
+            <p><strong>Advantages:</strong> No depth sensors needed, low computation, strong physical interpretability.
+            </p>
+          </div>
+
+          <!-- Innovation 6 -->
+          <div class="innovation-card">
+            <div class="innovation-number">6</div>
+            <h4>Role-adaptive Dual-view Decision Support System</h4>
+            <div class="comparison-grid">
+              <div class="comparison-column traditional">
+                <div class="comparison-title traditional">User View</div>
+                <p>Emphasizes self-perception ("YOU" marker)</p>
+                <p>Intuitive dashboard and action advice</p>
+                <p>Focuses on survival rate</p>
+              </div>
+              <div class="comparison-column our-approach">
+                <div class="comparison-title">Rescue View</div>
+                <p>Emphasizes overall situation</p>
+                <p>Dual-graph comparison (current vs. future)</p>
+                <p>Focuses on resource allocation</p>
+              </div>
+            </div>
+            <p>Transforms computer vision results into effective intelligence for different groups, enhancing system
+              practical application value.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Actual Results Showcase -->
+    <section id="showcase">
+      <div class="container">
+        <h2 class="section-title">Actual Results Showcase</h2>
+        <p class="section-subtitle">Demonstrating through actual scenarios how our system handles flood risks and
+          provides customized information for different users</p>
+
+        <div class="showcase-container">
+          <!-- Scenario Selection Tabs -->
+          <div class="scenario-tabs">
+            <button class="tab active" data-target="scenario4">Pedestrian Flood Risk</button>
+            <button class="tab" data-target="scenario7">Vehicle Flood Risk</button>
+          </div>
+
+          <!-- Scenario 4: Pedestrian Flood Risk -->
+          <div id="scenario4" class="scenario-content active">
+            <div class="scenario-description">
+              <h4><i class="fas fa-walking" style="color: var(--accent); margin-right: 10px;"></i> Pedestrian Flood Risk
+                Assessment Scenario</h4>
+              <p>In this scenario, the system detects 10 pedestrians in different water depth states. Through human pose
+                estimation and semantic segmentation, the system accurately identifies each person's submerged parts
+                (below knee, thigh/waist) and provides personalized risk levels and action advice.</p>
+              <p><strong>Rainfall Intensity:</strong> 5.0mm/h | <strong>Prediction Time:</strong> +10 minutes</p>
+            </div>
+
+            <div class="visualization-grid">
+              <!-- Processing Flow -->
+              <div class="vis-card">
+                <h4><i class="fas fa-sitemap vis-icon"></i> Processing Flow</h4>
+                <div class="vis-content">
+                  <img src="images/4_process.jpg" alt="Scenario4 process" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                  <p>Complete system processing flow, from original image input to final risk assessment output.</p>
+                </div>
+              </div>
+
+              <!-- User Interface -->
+              <div class="vis-card">
+                <h4><i class="fas fa-user vis-icon"></i> User-side Interface</h4>
+                <img src="images/4_final_result.jpg" alt="Scenario4 final" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <img src="images/4_for_user.jpg" alt="Scenario4 user view" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <div class="vis-content">
+                  <div class="dashboard-mockup">
+                    <div class="dashboard-header">
+                      <div>
+                        <h5 style="margin: 0; color: var(--primary-dark);">FORECAST (+10 min)</h5>
+                        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--gray);">USER: P1 | RAIN: 5.0mm/h
+                        </p>
+                      </div>
+                      <div class="advice-badge advice-caution">CAUTION</div>
+                    </div>
+                    <div class="risk-metrics">
+                      <div class="metric-card">
+                        <div class="metric-label">Current Risk</div>
+                        <div class="metric-value">0.23</div>
+                        <div class="risk-badge risk-low">Low Risk</div>
+                      </div>
+                      <div class="metric-card">
+                        <div class="metric-label">Future Risk (+10m)</div>
+                        <div class="metric-value">0.24</div>
+                        <div class="risk-badge risk-low">Low Risk</div>
+                      </div>
+                    </div>
+                    <div style="text-align: center; font-size: 0.9rem; color: var(--gray);">
+                      <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                      Water level below knee, advised to remain vigilant
+                    </div>
+                  </div>
+                  <p>Personalized dashboard for user P1, showing current and future risk levels and action advice.</p>
+                </div>
+              </div>
+
+              <!-- Rescue Interface -->
+              <div class="vis-card">
+                <h4><i class="fas fa-handshake vis-icon"></i> Rescue-side Interface</h4>
+                <img src="images/4_for_rescue.jpg" alt="Scenario4 rescue view"
+                  style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <div class="vis-content">
+                  <div class="dashboard-mockup">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                      <div style="font-size: 1.2rem; font-weight: 600; color: var(--primary-dark);">Current High-risk
+                        Persons: 0</div>
+                      <div style="font-size: 0.9rem; color: var(--gray);">Predicted High-risk Persons (+10 minutes): 0
+                      </div>
+                    </div>
+                    <div style="background-color: #e8f5e9; padding: 15px; border-radius: 6px; text-align: center;">
+                      <i class="fas fa-check-circle" style="color: #4caf50; font-size: 2rem; margin-bottom: 10px;"></i>
+                      <div style="font-weight: 600; color: #2e7d32;">No Emergency Rescue Needs Currently</div>
+                      <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">All persons in low-risk state</div>
+                    </div>
+                  </div>
+                  <p>Rescue personnel view, showing overall situation and number of high-risk persons needing priority
+                    rescue.</p>
+                </div>
+              </div>
+
+              <!-- Risk Comparison Chart -->
+              <div class="vis-card">
+                <h4><i class="fas fa-chart-bar vis-icon"></i> Risk Comparison Analysis</h4>
+                <div class="vis-content">
+                  <img src="images/4_risk_plot.png" alt="Scenario4 risk plot" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                  <p>Risk level comparison of all detected persons, visually showing high-risk individuals.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image gallery for Scenario 4 -->
+            <div class="vis-card">
+              <h4><i class="fas fa-images vis-icon"></i> Gallery</h4>
+              <div class="vis-content">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+                  <img src="images/4.png" alt="Scenario4 original" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="vis-card">
+              <h4><i class="fas fa-table vis-icon"></i> Detailed Detection Data</h4>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Class</th>
+                    <th>Depth</th>
+                    <th>State</th>
+                    <th>RiskNow</th>
+                    <th>RiskFut</th>
+                    <th>Advice</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>P1</td>
+                    <td>person</td>
+                    <td>0.20m</td>
+                    <td>below knee</td>
+                    <td>0.23</td>
+                    <td>0.24</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P2</td>
+                    <td>person</td>
+                    <td>0.60m</td>
+                    <td>thigh/waist</td>
+                    <td>0.51</td>
+                    <td>0.52</td>
+                    <td><span class="advice-badge advice-move">MOVE_HIGH</span></td>
+                  </tr>
+                  <tr>
+                    <td>P3</td>
+                    <td>person</td>
+                    <td>0.20m</td>
+                    <td>below knee</td>
+                    <td>0.23</td>
+                    <td>0.24</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P4</td>
+                    <td>person</td>
+                    <td>0.20m</td>
+                    <td>below knee</td>
+                    <td>0.23</td>
+                    <td>0.24</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P5</td>
+                    <td>person</td>
+                    <td>0.20m</td>
+                    <td>below knee</td>
+                    <td>0.23</td>
+                    <td>0.24</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P6</td>
+                    <td>person</td>
+                    <td>0.21m</td>
+                    <td>near_below knee</td>
+                    <td>0.23</td>
+                    <td>0.24</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P7</td>
+                    <td>person</td>
+                    <td>0.23m</td>
+                    <td>near_below knee</td>
+                    <td>0.24</td>
+                    <td>0.25</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P8</td>
+                    <td>person</td>
+                    <td>0.22m</td>
+                    <td>near_below knee</td>
+                    <td>0.23</td>
+                    <td>0.25</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P9</td>
+                    <td>person</td>
+                    <td>0.19m</td>
+                    <td>near_below knee</td>
+                    <td>0.22</td>
+                    <td>0.23</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                  <tr>
+                    <td>P10</td>
+                    <td>person</td>
+                    <td>0.58m</td>
+                    <td>near_waist</td>
+                    <td>0.50</td>
+                    <td>0.51</td>
+                    <td><span class="advice-badge advice-move">MOVE_HIGH</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="margin-top: 15px; font-size: 0.9rem; color: var(--gray);">The system detected 10 pedestrians, of
+                which 2 (P2, P10) are in high-risk state (water depth above waist), advised to move to higher ground
+                immediately.</p>
+            </div>
+          </div>
+
+          <!-- Scenario 7: Vehicle Flood Risk -->
+          <div id="scenario7" class="scenario-content">
+            <div class="scenario-description">
+              <h4><i class="fas fa-car" style="color: var(--accent); margin-right: 10px;"></i> Vehicle Flood Risk
+                Assessment Scenario</h4>
+              <p>In this scenario, the system detects 2 vehicles in different submersion states. Through vehicle
+                detection and geometric analysis, the system accurately identifies vehicle submerged parts (tire level,
+                roof submerged) and provides differentiated risk levels and action advice.</p>
+              <p><strong>Rainfall Intensity:</strong> 3.0mm/h | <strong>Prediction Time:</strong> +10 minutes</p>
+            </div>
+
+            <div class="visualization-grid">
+              <!-- Processing Flow -->
+              <div class="vis-card">
+                <h4><i class="fas fa-sitemap vis-icon"></i> Processing Flow</h4>
+                <div class="vis-content">
+                  <img src="images/7_process.jpg" alt="Scenario7 process" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                  <p>Complete system processing flow, specifically optimized for vehicle scenarios.</p>
+                </div>
+              </div>
+
+              <!-- User Interface -->
+              <div class="vis-card">
+                <h4><i class="fas fa-user vis-icon"></i> User-side Interface (V1)</h4>
+                <img src="images/7_final_result.jpg" alt="Scenario7 final" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <img src="images/7_for_user.jpg" alt="Scenario7 user view" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <div class="vis-content">
+                  <div class="dashboard-mockup">
+                    <div class="dashboard-header">
+                      <div>
+                        <h5 style="margin: 0; color: var(--primary-dark);">FORECAST (+10 min)</h5>
+                        <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: var(--gray);">USER: V1 | RAIN: 3.0mm/h
+                        </p>
+                      </div>
+                      <div class="advice-badge advice-evacuate">EVACUATE</div>
+                    </div>
+                    <div class="risk-metrics">
+                      <div class="metric-card">
+                        <div class="metric-label">Current Risk</div>
+                        <div class="metric-value" style="color: #cc0000;">1.00</div>
+                        <div class="risk-badge risk-high">Extreme Risk</div>
+                      </div>
+                      <div class="metric-card">
+                        <div class="metric-label">Future Risk (+10m)</div>
+                        <div class="metric-value" style="color: #cc0000;">1.00</div>
+                        <div class="risk-badge risk-high">Extreme Risk</div>
+                      </div>
+                    </div>
+                    <div style="text-align: center; font-size: 0.9rem; color: #cc0000; font-weight: 600;">
+                      <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>
+                      Vehicle completely submerged, evacuate immediately!
+                    </div>
+                  </div>
+                  <p>Emergency alert interface for vehicle V1, water depth 1.5m (roof submerged), requiring immediate
+                    evacuation.</p>
+                </div>
+              </div>
+
+              <!-- Rescue Interface -->
+              <div class="vis-card">
+                <h4><i class="fas fa-handshake vis-icon"></i> Rescue-side Interface</h4>
+                <img src="images/7_for_rescue.jpg" alt="Scenario7 rescue view"
+                  style="width:100%;border-radius:6px;border:1px solid #eee;">
+                <div class="vis-content">
+                  <div class="dashboard-mockup">
+                    <div style="text-align: center; margin-bottom: 15px;">
+                      <div style="font-size: 1.2rem; font-weight: 600; color: var(--primary-dark);">Current High-risk
+                        Vehicles: 1</div>
+                      <div style="font-size: 0.9rem; color: var(--gray);">Predicted High-risk Vehicles (+10 minutes): 1
+                      </div>
+                    </div>
+                    <div style="background-color: #ffebee; padding: 15px; border-radius: 6px; text-align: center;">
+                      <i class="fas fa-exclamation-circle"
+                        style="color: #f44336; font-size: 2rem; margin-bottom: 10px;"></i>
+                      <div style="font-weight: 600; color: #c62828;">Emergency Found!</div>
+                      <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Vehicle V1 completely submerged,
+                        requires emergency rescue</div>
+                    </div>
+                  </div>
+                  <p>Rescue personnel view, highlighting high-risk vehicles needing emergency rescue.</p>
+                </div>
+              </div>
+
+              <!-- Risk Comparison Chart -->
+              <div class="vis-card">
+                <h4><i class="fas fa-chart-bar vis-icon"></i> Risk Comparison Analysis</h4>
+                <div class="vis-content">
+                  <img src="images/7_risk_plot.png" alt="Scenario7 risk plot" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                  <p>Risk level comparison of two vehicles, V1 in extreme risk state.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image gallery for Scenario 7 -->
+            <div class="vis-card">
+              <h4><i class="fas fa-images vis-icon"></i> Gallery</h4>
+              <div class="vis-content">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+                  <img src="images/7.png" alt="Scenario7 original" style="width:100%;border-radius:6px;border:1px solid #eee;">
+                </div>
+                <p style="margin-top:10px;color:var(--gray);font-size:0.9rem;">Examples: original, process, final result, risk plot
+                  and UI screenshots.</p>
+              </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="vis-card">
+              <h4><i class="fas fa-table vis-icon"></i> Detailed Detection Data</h4>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Class</th>
+                    <th>Depth</th>
+                    <th>State</th>
+                    <th>RiskNow</th>
+                    <th>RiskFut</th>
+                    <th>Advice</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>V1</td>
+                    <td>car</td>
+                    <td>1.50m</td>
+                    <td>roof_submerged</td>
+                    <td>1.00</td>
+                    <td>1.00</td>
+                    <td><span class="advice-badge advice-evacuate">EVACUATE</span></td>
+                  </tr>
+                  <tr>
+                    <td>V2</td>
+                    <td>car</td>
+                    <td>0.14m</td>
+                    <td>tire_level</td>
+                    <td>0.30</td>
+                    <td>0.31</td>
+                    <td><span class="advice-badge advice-caution">CAUTION</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p style="margin-top: 15px; font-size: 0.9rem; color: var(--gray);">The system detected 2 vehicles, of
+                which V1 is completely submerged (water depth 1.5m), requiring immediate evacuation; V2 only tire-level
+                submerged, advised to remain vigilant.</p>
+            </div>
+
+            <!-- Differentiated Risk Assessment Explanation -->
+            <div class="highlight" style="margin-top: 30px;">
+              <h5><i class="fas fa-lightbulb" style="color: var(--accent); margin-right: 10px;"></i> Differentiated Risk
+                Assessment Demonstration</h5>
+              <p>This scenario fully demonstrates our differentiated risk assessment capability:</p>
+              <ul>
+                <li><strong>V1 (water depth 1.5m):</strong> Vehicle completely submerged → risk value 1.00 → advice
+                  "Evacuate immediately"</li>
+                <li><strong>V2 (water depth 0.14m):</strong> Only tire-level submerged → risk value 0.30 → advice
+                  "Remain vigilant"</li>
+              </ul>
+              <p>Unlike traditional generic thresholds like "water depth > 0.5m = danger", our system performs precise
+                assessment based on vehicle type and actual submerged parts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand Image -->
+    <section id="brand">
+      <div class="container">
+        <h2 class="section-title">Brand Image</h2>
+        <p class="section-subtitle">We convey the team's values and professionalism through consistent brand image</p>
+
+        <div class="brand-grid">
+          <div class="brand-card">
+            <h3>Brand Core</h3>
+            <p><strong>Who we serve:</strong> Urban commuters (including rescue agencies and governments)</p>
+            <p><strong>What problem we solve:</strong> Flood risk prediction for pedestrians and vehicles</p>
+            <p><strong>Most essential difference:</strong> Humanistic care, good at discovering important problems,
+              fully discussing and perfecting viewpoints, innovatively applying to solve technical difficulties.</p>
+          </div>
+
+          <div class="brand-card">
+            <h3>Brand Personality</h3>
+            <p><strong>More like expert or friend:</strong> Expert but caring</p>
+            <p><strong>More rational or emotional:</strong> Mainly rational</p>
+            <p><strong>More aggressive or steady:</strong> Steady</p>
+            <p><strong>More cutting-edge or practical:</strong> Cutting-edge but grounded</p>
+          </div>
+
+          <div class="brand-card">
+            <h3>Brand Narrative Keywords</h3>
+            <ul class="keyword-list">
+              <li>Seeing risks</li>
+              <li>Predicting the future</li>
+              <li>People-oriented</li>
+              <li>Calm and reliable</li>
+              <li>Urban scale</li>
+            </ul>
+          </div>
+
+          <div class="brand-card">
+            <h3>Visual System</h3>
+            <p><strong>Brand Name:</strong> FlowSafety</p>
+            <p><strong>One-sentence positioning:</strong> Seeing overlooked risks in the city</p>
+
+            <div class="color-swatch">
+              <div class="color color-1">Deep Indigo Blue</div>
+              <div class="color color-2">Gray White</div>
+              <div class="color color-3">Amber Orange</div>
+            </div>
+
+            <p><strong>Font:</strong> Sans-serif, engineering-oriented</p>
+          </div>
+
+          <div class="brand-card">
+            <h3>Tone Style</h3>
+            <p><strong>Rational × Specific × Not exaggerated × Responsible × Patient and caring</strong></p>
+            <ul class="keyword-list">
+              <li>No exclamation marks</li>
+              <li>Don't exaggerate the future</li>
+              <li>All conclusions尽量 supported by data</li>
+              <li>Focus on facts and evidence</li>
+              <li>Care about user situations</li>
+            </ul>
+          </div>
+
+          <div class="brand-card">
+            <h3>Design Language</h3>
+            <ul class="keyword-list">
+              <li>Large whitespace</li>
+              <li>Grid layout</li>
+              <li>Wireframe / semi-transparent overlay</li>
+              <li>Data visualization优先 over decoration</li>
+              <li>Simple and efficient</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Future Applications -->
+    <section id="applications">
+      <div class="container">
+        <h2 class="section-title">Future Application Directions</h2>
+        <p class="section-subtitle">Direct extensions based on current architecture, not fanciful ideas to start over
+        </p>
+
+        <div class="application-grid">
+          <div class="application-card">
+            <div class="application-icon">
+              <i class="fas fa-road"></i>
+            </div>
+            <h4>Urban Road Real-time Flood Warning System</h4>
+            <p><strong>Application method:</strong> Connect to road surveillance, label路段 danger levels and risk上升
+              trends in real time.</p>
+            <p><strong>Advantage:</strong> Doesn't rely on manual reporting, can serve as auxiliary system for traffic
+              police/urban management.</p>
+          </div>
+
+          <div class="application-card">
+            <div class="application-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <h4>Driving Assistance / Smart Navigation "Water Avoidance Decision"</h4>
+            <p><strong>Application method:</strong> Output directly connected to navigation system, providing advice
+              like "water ahead,建议绕行".</p>
+            <p><strong>Advantage:</strong> More granular than simple "road closed" information, provides precise water
+              avoidance routes.</p>
+          </div>
+
+          <div class="application-card">
+            <div class="application-icon">
+              <i class="fas fa-life-ring"></i>
+            </div>
+            <h4>Personnel Safety Assessment in Disaster Emergency</h4>
+            <p><strong>Application method:</strong> Identify persons already in high-risk water depth and those靠近危险区域.
+            </p>
+            <p><strong>Advantage:</strong> Provides decision assistance for "who to save, who to save first", improving。 
+              rescue efficiency.</p>
+          </div>
+
+          <div class="application-card">
+            <div class="application-icon">
+              <i class="fas fa-drone"></i>
+            </div>
+            <h4>Drone + Air-ground Collaborative Flood Assessment</h4>
+            <p><strong>Application method:</strong> Drone scans一圈, automatically generates risk heat map.</p>
+            <p><strong>Advantage:</strong> Algorithm doesn't require fixed angle, adapts to multi-view data sources.</p>
+          </div>
+
+          <div class="application-card">
+            <div class="application-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <h4>Flood Dataset and Risk Model Research</h4>
+            <p><strong>Application method:</strong> Extend to flood vision benchmark dataset and risk prediction
+              benchmark.</p>
+            <p><strong>Advantage:</strong> Promotes visual + physical hybrid model research, advances academic
+              development.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Summary -->
+    <section id="summary">
+      <div class="container">
+        <div class="model-container"
+          style="background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%); color: white;">
+          <div style="padding: 50px; text-align: center;">
+            <h2 style="color: white; margin-bottom: 30px;">Project Summary</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+              This project proposes a localized flood risk assessment method based on visual perception,<br>
+              By fusing water segmentation, object detection, water depth estimation, rainfall and terrain
+              information,<br>
+              It achieves differentiated, time-dependent flood risk prediction for pedestrians and vehicles.<br>
+              The system doesn't rely on additional sensors, has low cost and high scalability,<br>
+              Can be applied to urban road safety, disaster emergency response, and intelligent transportation
+              scenarios.
+            </p>
+            <!-- <p style="font-style: italic; opacity: 0.8;">
+              "This is an urban flood risk assessment system that integrates human pose estimation and environmental
+              perception,<br>
+              It can not only accurately quantify current water depth through visual features,<br>
+              But also predict future risks combining meteorological data,<br>
+              Providing hierarchical decision support for affected people and rescue forces."
+            </p> -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-logo">FlowSafety</div>
+          <p class="footer-description">Through AI models, feature recognition and computer visualization, we enable
+            every person in the city to know their flood risk earlier and more specifically, and to receive rescue and
+            assistance in time.</p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#story">Team Story</a></li>
+            <li><a href="#model">Product Model</a></li>
+            <li><a href="#innovation">Innovations</a></li>
+            <li><a href="#showcase">Results</a></li>
+            <li><a href="#brand">Brand</a></li>
+            <li><a href="#applications">Applications</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <!-- <h4 class="footer-heading">Contact Us</h4>
+          <ul class="footer-links">
+            <li><i class="fas fa-envelope" style="margin-right: 10px;"></i> contact@flowsafety.org</li>
+            <li><i class="fas fa-phone" style="margin-right: 10px;"></i> +1 (555) 123-4567</li>
+            <li><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> 123 Innovation Drive, Tech City</li>
+          </ul> -->
+        </div>
+      </div>
+
+      <div class="copyright">
+        <p>&copy; 2024 FlowSafety. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    // Smooth Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          // Close mobile menu
+          navMenu.classList.remove('active');
+
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Add Scroll Effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.style.backgroundColor = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+      } else {
+        header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.05)';
+      }
+    });
+
+    // Actual Results Showcase Tab Switching
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.scenario-content');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+          const targetId = this.getAttribute('data-target');
+
+          // Update tab state
+          tabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+
+          // Update content display
+          contents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === targetId) {
+              content.classList.add('active');
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
