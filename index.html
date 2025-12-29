@@ -233,6 +233,11 @@
       transform: translateY(-5px);
     }
 
+    /* Wide variant: span two columns in the story grid */
+    .story-card.wide {
+      grid-column: span 2;
+    }
+
     .story-card h3 {
       font-size: 1.5rem;
       color: var(--primary-dark);
@@ -877,6 +882,11 @@
         min-width: 120px;
         text-align: center;
       }
+
+      /* Mobile fallback: wide card should behave like normal cards on small screens */
+      .story-card.wide {
+        grid-column: auto;
+      }
     }
   </style>
 </head>
@@ -981,6 +991,30 @@
             <p><strong>Even if the short-term impact may not be significant, we are still willing to persist in
                 promotion and innovation.</strong> We focus on long-term impact and continuously promote technological
               innovation and application.</p>
+          </div>
+
+          <div class="story-card wide">
+            <h3><i class="fas fa-users story-icon"></i> Our Team</h3>
+            <p>Our team is an interdisciplinary group formed by students and researchers from computer vision, hydrology, and
+              disaster management fields, united by the goal of using technology to mitigate flood casualties.</p>
+            <p>The team was established after witnessing the 2023 regional flood disasters, where we identified the gap between
+              visual flood monitoring and practical risk decision-making.</p>
+          
+            <div class="highlight">
+              <p><strong>Key roles include:</strong></p>
+              <ul style="margin-top: 10px;">
+                <li><strong>Computer Vision Engineer</strong> - Leading model development (with 3+ years of deep learning
+                  experience)</li>
+                <li><strong>Hydrologist</strong> - Specializing in flood risk modeling (advised by a national disaster management
+                  expert)</li>
+                <li><strong>Product Designer</strong> - Focusing on user-centric emergency system design</li>
+                <li><strong>Field Operations Specialist</strong> - With on-site flood rescue experience</li>
+              </ul>
+            </div>
+          
+            <p>We bring complementary expertise: cutting-edge AI modeling capabilities, professional hydrological data analysis,
+              real-world disaster response insights, and hands-on engineering implementation experience, ensuring the innovation
+              is both technically advanced and practically applicable.</p>
           </div>
         </div>
       </div>
@@ -1217,7 +1251,6 @@
               <!-- User Interface -->
               <div class="vis-card">
                 <h4><i class="fas fa-user vis-icon"></i> User-side Interface</h4>
-                <img src="images/4_final_result.jpg" alt="Scenario4 final" style="width:100%;border-radius:6px;border:1px solid #eee;">
                 <img src="images/4_for_user.jpg" alt="Scenario4 user view" style="width:100%;border-radius:6px;border:1px solid #eee;">
                 <div class="vis-content">
                   <div class="dashboard-mockup">
@@ -1432,7 +1465,6 @@
               <!-- User Interface -->
               <div class="vis-card">
                 <h4><i class="fas fa-user vis-icon"></i> User-side Interface (V1)</h4>
-                <img src="images/7_final_result.jpg" alt="Scenario7 final" style="width:100%;border-radius:6px;border:1px solid #eee;">
                 <img src="images/7_for_user.jpg" alt="Scenario7 user view" style="width:100%;border-radius:6px;border:1px solid #eee;">
                 <div class="vis-content">
                   <div class="dashboard-mockup">
@@ -1765,12 +1797,12 @@
         </div>
 
         <div>
-          <!-- <h4 class="footer-heading">Contact Us</h4>
+          <h4 class="footer-heading">Contact Us</h4>
           <ul class="footer-links">
-            <li><i class="fas fa-envelope" style="margin-right: 10px;"></i> contact@flowsafety.org</li>
-            <li><i class="fas fa-phone" style="margin-right: 10px;"></i> +1 (555) 123-4567</li>
-            <li><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> 123 Innovation Drive, Tech City</li>
-          </ul> -->
+            <li><i class="fas fa-envelope" style="margin-right: 10px;"></i> FlowSafety@outlook.com</li>
+            <!-- <li><i class="fas fa-phone" style="margin-right: 10px;"></i> +1 (555) 123-4567</li>
+            <li><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> 123 Innovation Drive, Tech City</li> -->
+          </ul>
         </div>
       </div>
 
