@@ -515,6 +515,26 @@ section {
   color: var(--accent);
 }
 
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+  min-width: 0;
+  /* 防止子项强制撑大网格 */
+}
+
+.comparison-column {
+  padding: 15px;
+  border-radius: 6px;
+  min-width: 0;
+  /* 允许内容收缩 */
+  overflow-wrap: break-word;
+  /* 长单词断行 */
+  word-break: break-word;
+  /* 兼容性断词 */
+}
+
 /* Future Applications Section */
 .application-grid {
   display: grid;
