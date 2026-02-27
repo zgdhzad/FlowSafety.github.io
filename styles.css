@@ -535,6 +535,49 @@ section {
   /* 兼容性断词 */
 }
 
+/* 修复创新点中对比网格内容溢出问题 */
+.comparison-grid {
+  min-width: 0;
+  /* 允许网格列收缩，防止内容强制撑开 */
+  max-width: 100%;
+  /* 限制最大宽度为父容器宽度 */
+  width: 100%;
+  /* 确保网格宽度不会超出父容器 */
+}
+
+.comparison-column {
+  min-width: 0;
+  /* 允许列内内容收缩 */
+  max-width: 100%;
+  /* 防止列宽度超过父容器 */
+  width: 100%;
+  /* 强制列宽度不超过父容器宽度 */
+  box-sizing: border-box;
+  /* 内边距和边框包含在宽度内，避免额外溢出 */
+  word-break: break-word;
+  /* 允许在单词内断行（兼容WebKit） */
+  overflow-wrap: break-word;
+  /* 标准属性，允许长单词断行 */
+  -webkit-hyphens: auto;
+  /* 可选，启用连字符（需要语言支持） */
+  hyphens: auto;
+}
+
+.comparison-column p {
+  word-break: break-word;
+  /* 确保段落内的长文本也断行 */
+  overflow-wrap: break-word;
+  margin: 0 0 8px 0;
+  /* 保持原有段落间距，但可根据需要调整 */
+}
+
+/* 对传统列和 Our Method 列分别做细微调整（可选） */
+.comparison-column.traditional,
+.comparison-column.our-approach {
+  overflow: hidden;
+  /* 隐藏可能溢出的内容（但已通过断行避免，此行为后备） */
+}
+
 /* Future Applications Section */
 .application-grid {
   display: grid;
