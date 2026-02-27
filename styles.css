@@ -578,6 +578,46 @@ section {
   /* 隐藏可能溢出的内容（但已通过断行避免，此行为后备） */
 }
 
+/* ===== 创新点对比网格溢出修复 ===== */
+.innovation-card .comparison-grid {
+  min-width: 0;
+  /* 允许网格列收缩 */
+  max-width: 100%;
+  /* 限制网格最大宽度为父容器 */
+  width: 100%;
+  /* 确保网格宽度不超过父容器 */
+}
+
+.innovation-card .comparison-column {
+  min-width: 0;
+  /* 允许列内内容收缩 */
+  max-width: 100%;
+  /* 防止列宽度超出父容器 */
+  width: 100%;
+  /* 强制列宽度不超出 */
+  box-sizing: border-box;
+  /* 内边距+边框计入宽度计算，避免溢出 */
+  word-break: break-word;
+  /* 允许在单词内断行（推荐） */
+  overflow-wrap: break-word;
+  /* 兼容性断词 */
+  white-space: normal;
+  /* 确保自动换行 */
+  -webkit-hyphens: auto;
+  /* 可选：启用连字符（英文单词可加连字符断行） */
+  hyphens: auto;
+}
+
+.innovation-card .comparison-column p {
+  margin: 0 0 8px 0;
+  /* 保持段落间距，可自行调整 */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* 以上样式确保创新点对比网格在内容较多时能够正确断行，避免溢出问题，同时保持原有的设计风格和布局。 */
+
 /* Future Applications Section */
 .application-grid {
   display: grid;
